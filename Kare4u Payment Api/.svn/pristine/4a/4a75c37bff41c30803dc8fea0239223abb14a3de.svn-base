@@ -1,0 +1,190 @@
+﻿@using Newtonsoft.Json
+@using System
+@using System.Globalization
+@using Kare4uPaymentPlatform.Models
+@model Kare4uPaymentPlatform.Models.PaymentGateway.InterimOrderDeatils
+
+@{
+    ViewBag.Title = "ProcessOrderAfterPayment";
+    List<ShoppingCartContents> orderDetails = JsonConvert.DeserializeObject<List<ShoppingCartContents>>(Model.OrderDetails);
+    // var orderInfoDetails = JsonConvert.DeserializeObject<Books>(Model.OrderDetails);
+}
+
+<style>
+    #hidden_nevbar {
+        /*display: none;*/
+        visibility: hidden;
+    }
+
+    .menu_border {
+        /*display:none;*/
+        /*visibility: hidden;*/
+    }
+
+    th {
+        text-transform: capitalize !important;
+    }
+
+    .popover {
+        background-color: black;
+        height: 60px;
+        padding: 0px;
+        top: -4px;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 1;
+        width: 185px;
+    }
+
+    .trans_failed {
+        font-weight: bold;
+        text-align: center;
+        font-size: 25px;
+        color: red;
+        background: #e8dfdf;
+        padding: 5px;
+    }
+
+    .thankyou-msg {
+        text-align: center;
+        background: #dadde0;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+
+    .thankyou-msg {
+        color: #0b5292;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .thankyou-error {
+        color: red;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .total-price-style {
+        text-align: right;
+        font-size: 16px;
+        font-weight: bold;
+        color: #ff8d00;
+        font-style: italic;
+    }
+</style>
+
+
+
+
+<div class="container" style="background-color: white;">
+    @if (@Model.PaymentStatus)
+    {
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 thankyou-msg">
+            @*<span class="thankyou-span">Thank You.</span><span style="font-size: 15px;">@Model.TransactionResponse.TransRespDesc</span><i class="fa fa-check"></i>*@
+            <span style="font-size: 16px;color:#11b562">Your booking has been confirmed.</span>
+            <h3 class="">Your booking confirmation number is : @Model.UniqueReference</h3>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive" style="padding: 0px;">
+                <table class="table">
+                    <tr>
+                        <th>Lab/Hospital Name</th>
+                        <th>Booking For</th>
+                        <th>Booking Date</th>
+                        <th>Booking Time</th>
+                        <th>Contact</th>
+                        <th>TransactionID</th>
+                        <th>Price After Discount</th>
+                    </tr>
+                    @foreach (var item in orderDetails)
+                    {
+                        <tr>
+                            @if (@item.LabName != null && @item.LabName != "")
+                            {
+                                <td>@item.LabName</td>
+                            }
+                            else
+                            {
+                                <td> - </td>
+                            }
+                            @if (@item.BookedForName != null && @item.BookedForName != "")
+                            {
+                                <td>@item.BookedForName</td>
+                            }
+                            else
+                            {
+                                <td> - </td>
+                            }
+
+                            <td>@item.BookingDate.ToString("dd-MMM-yyyy")</td>
+                            <td>@item.BookingSlot</td>
+                            <td>@item.ContactNo</td>
+                            <td>@Model.TransactionID</td>
+                            <td>@item.PriceAfterDiscount</td>
+                        </tr>
+                    }
+                </table>
+                <p class="total-price-style">Total Paid Amount: @Model.AmountToBeCharged</p>
+            </div>
+        </div>
+        <div class="col-lg-12" style="text-align:center;margin-top: 5%;">
+            <h4 style="color: #11b562;font-size: 15px;">The booking confirmation has been send to your email id. Please check.</h4>
+            @*<button class="btn btn-md btn-primary" onclick="printReceipt(@Model.Id)"><i class="fa fa-print"></i>&nbsp;Print</button>*@
+	<a href="http://healthpro.kare4u.in/health-package/"><button class="btn btn-md btn-primary"><i class="fa fa-print"></i>&nbsp;Back</button></a>
+        </div>
+    }
+
+    @if (@Model.PaymentStatus == false)
+    {
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 thankyou-msg">
+            @*<span class="thankyou-span">Thank You.</span><span style="font-size: 15px;">@Model.TransactionResponse.TransRespDesc</span><i class="fa fa-check"></i>*@
+            @if (@Model.PaymentResponse == "Failure")
+            {
+                <span>
+                    <span style="font-size: 16px;color:#f93306">Sorry, Your order booking has been failed. If you have made payment, please Contact Support.</span>
+                </span>
+            }
+            else
+            {
+                <span>
+                    <span style="font-size: 16px;color:#f93306">Your order booking is pending. We will update you the order status</span>
+                </span>
+            }
+
+            <h3>Your order booking id is : @Model.UniqueReference</h3>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table-responsive" style="padding: 0px;">
+                <table class="table">
+                    <tr>
+                        <th>Lab/Hospital Name</th>
+                        <th>Booking For</th>
+                        <th>Booking Date</th>
+                        <th>Booking Time</th>
+                        <th>Contact</th>
+                        <th>TransactionID</th>
+                        <th>Price After Discount()</th>
+                    </tr>
+                    @foreach (var item in orderDetails)
+                    {
+                        <tr>
+                            <td>@item.LabName</td>
+                            <td>@item.BookedForName</td>
+                            <td>@item.BookingDate.ToString("dd-MMM-yyyy")</td>
+                            <td>@item.BookingSlot</td>
+                            <td>@item.ContactNo</td>
+                            <td>@Model.TransactionID</td>
+                            <td>Rs. @item.PriceAfterDiscount</td>
+                        </tr>
+                    }
+                </table>
+                <p class="total-price-style">Total Paid Amount: Rs. @Model.AmountToBeCharged</p>
+            </div>
+        </div>
+		        <div class="col-lg-12" style="text-align:center;margin-top: 5%;">
+           
+			          <a href="http://healthpro.kare4u.in/health-package/"><button class="btn btn-md btn-primary"><i class="fa fa-print"></i>&nbsp;Back</button></a>
+        </div>
+    }
+</div>

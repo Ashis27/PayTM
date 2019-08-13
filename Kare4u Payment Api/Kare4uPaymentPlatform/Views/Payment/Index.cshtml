@@ -1,0 +1,15 @@
+﻿
+@model Kare4uPaymentPlatform.Models.PaytmRequest
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var response1 = @Html.Raw(Json.Encode(Model));
+
+        console.log(response1);
+    $("body").append(response1.PaymentUrl);
+    });
+
+
+</script>
+

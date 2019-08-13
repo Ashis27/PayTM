@@ -1,0 +1,253 @@
+﻿@model Kare4uPaymentPlatform.Models.PaytmResponse
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //var paytmResponse = {
+          //  TXNID: "ghj",
+            //BANKTXNID: "10235",
+            //TXNAMOUNT: "",
+            //CURRENCY: "dollar"
+        //}
+        //var saveData = $.ajax({
+        //    type: 'POST',
+        //    url: "/Payment/AfterCheckResponse",
+        //    data: paytmResponse,
+        //    dataType: "text",
+        //    async: false
+
+        //});
+       // $.post("/Payment/AfterCheckResponse", paytmResponse);
+
+        var response1 = @Html.Raw(Json.Encode(Model));
+       // console.log(response1);
+        $("#CURRENCY").val(response1.CURRENCY);
+        //$("#CURRENCY").val(response1.CURRENCY);
+        $("#UniqueReference").val(response1.UniqueReference);
+        var urlData = JSON.stringify({ "MID": response1.MID, "ORDERID": response1.ORDERID, "CHECKSUMHASH": response1.CHECKSUMHASH });
+
+        $.ajax({
+            url: "https://securegw-stage.paytm.in/merchant-status/getTxnStatus?JsonData=" + urlData,
+            type: 'GET',
+            success: function (res) {
+                //console.log(res);
+                //alert(res);
+
+                $("#MID").val(res.MID);
+                $("#TXNID").val(res.TXNID);
+                $("#BANKTXNID").val(res.BANKTXNID);
+                $("#TXNAMOUNT").val(res.TXNAMOUNT);
+
+                $("#ORDERID").val(res.ORDERID);
+                $("#STATUS").val(res.STATUS);
+                $("#RESPCODE").val(res.RESPCODE);
+                $("#RESPMSG").val(res.RESPMSG);
+                $("#TXNDATE").val(res.TXNDATE);
+                $("#GATEWAYNAME").val(res.GATEWAYNAME);
+                $("#BANKNAME").val(res.BANKNAME);
+                $("#PAYMENTMODE").val(res.PAYMENTMODE);
+
+                $("#PROMO_CAMP_ID").val();
+                $("#PROMO_STATUS").val();
+                $("#PROMO_RESPCODE").val();
+                $("#CHECKSUMHASH").val();
+                document.getElementById("signInForm").submit();
+
+            }
+        });
+
+    });
+
+
+</script>
+
+
+
+<form action="AfterCheckResponse" method="POST" id="signInForm">
+    <input type="hidden" name="MID" value="" id="MID" />
+    <input type="hidden" name="TXNID" value="" id="TXNID" />
+    <input type="hidden" name="BANKTXNID" value="" id="BANKTXNID" />
+    <input type="hidden" name="TXNAMOUNT" value="" id="TXNAMOUNT" />
+    <input type="hidden" name="CURRENCY" value="" id="CURRENCY" />
+
+    <input type="hidden" name="ORDERID" value="" id="ORDERID" />
+    <input type="hidden" name="STATUS" value="" id="STATUS" />
+    <input type="hidden" name="RESPCODE" value="" id="RESPCODE" />
+    <input type="hidden" name="RESPMSG" value="" id="RESPMSG" />
+
+    <input type="hidden" name="TXNDATE" value="" id="TXNDATE" />
+    <input type="hidden" name="GATEWAYNAME" value="" id="GATEWAYNAME" />
+    <input type="hidden" name="BANKNAME" value="" id="BANKNAME" />
+    <input type="hidden" name="PAYMENTMODE" value="" id="PAYMENTMODE" />
+
+    <input type="hidden" name="PROMO_CAMP_ID" value="" id="PROMO_CAMP_ID" />
+    <input type="hidden" name="PROMO_STATUS" value="" id="PROMO_STATUS" />
+    <input type="hidden" name="PROMO_RESPCODE" value="" id="PROMO_RESPCODE" />
+    <input type="hidden" name="CHECKSUMHASH" value="" id="CHECKSUMHASH" />
+    <input type="hidden" name="UniqueReference" value="" id="UniqueReference" />
+    <input type="submit" value="Sign in" style="visibility:hidden;"/>
+</form>
+
+@*@using (Html.BeginForm("AfterCheckResponse", "Payment"))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>PaytmResponse</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.MID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.MID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TXNID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TXNID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TXNID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BANKTXNID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.BANKTXNID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.BANKTXNID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TXNAMOUNT, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TXNAMOUNT, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TXNAMOUNT, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CURRENCY, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CURRENCY, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CURRENCY, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ORDERID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ORDERID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ORDERID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.STATUS, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.STATUS, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.STATUS, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RESPCODE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RESPCODE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RESPCODE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RESPMSG, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RESPMSG, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RESPMSG, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TXNDATE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TXNDATE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TXNDATE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.GATEWAYNAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.GATEWAYNAME, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.GATEWAYNAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BANKNAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.BANKNAME, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.BANKNAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PAYMENTMODE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PAYMENTMODE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PAYMENTMODE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PROMO_CAMP_ID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PROMO_CAMP_ID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PROMO_CAMP_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PROMO_STATUS, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PROMO_STATUS, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PROMO_STATUS, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PROMO_RESPCODE, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PROMO_RESPCODE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PROMO_RESPCODE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.CHECKSUMHASH, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CHECKSUMHASH, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CHECKSUMHASH, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.UniqueReference, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.UniqueReference, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UniqueReference, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
